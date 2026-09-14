@@ -1,0 +1,34 @@
+info:
+  name: Disabled User Login
+  type: http
+  seq: 14
+
+http:
+  method: POST
+  url: http://167.99.2.103/API/Login.php
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "login": "testuser",
+        "password": "ChangeMe123!"
+      }
+  auth: inherit
+
+runtime:
+  assertions:
+    - expression: res.status
+      operator: eq
+      value: "403"
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  Required demo: proves that a disabled account receives a clear error and cannot log in.

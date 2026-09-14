@@ -1,0 +1,29 @@
+info:
+  name: Admin Search Contacts
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: http://167.99.2.103/API/AdminSearchContacts.php
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: Bearer 1
+  body:
+    type: json
+    data: |-
+      {
+        "search": "Jamie"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  Lets an authorized Admin search contacts belonging to all users.

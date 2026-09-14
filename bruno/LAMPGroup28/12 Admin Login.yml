@@ -1,0 +1,28 @@
+info:
+  name: Admin Login
+  type: http
+  seq: 12
+
+http:
+  method: POST
+  url: http://167.99.2.103/API/Login.php
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "login": "admin",
+        "password": "AdminPassword123!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |-
+  Logs in the demonstration Admin account. Replace the example credentials before testing.

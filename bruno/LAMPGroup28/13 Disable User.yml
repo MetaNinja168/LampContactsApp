@@ -1,0 +1,27 @@
+info:
+  name: Disable User
+  type: http
+  seq: 13
+
+http:
+  method: POST
+  url: http://167.99.2.103/API/SetUserStatus.php
+  headers:
+    - name: Content-Type
+      value: application/json
+    - name: Authorization
+      value: Bearer 1
+  body:
+    type: json
+    data: |-
+      {
+        "userId": 2,
+        "isActive": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: true
+  maxRedirects: 5

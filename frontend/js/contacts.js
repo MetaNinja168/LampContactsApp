@@ -1,4 +1,4 @@
-const CONTACTS_API = "http://167.99.2.103/index.php";
+const CONTACTS_API = "https://167.99.2.103/index.php"; 
 
 const token = localStorage.getItem("token");
 const firstName = localStorage.getItem("firstName");

@@ -15,7 +15,7 @@ showLoginButton.addEventListener("click", function () {
 });
 
 // API endpoint
-const API_URL = "http://167.99.2.103/API/auth.php";
+const API_URL = "https://167.99.2.103/API/auth.php";
 
 
 // Register a new user

@@ -1,4 +1,4 @@
-const ADMIN_API = "https:/167.99.2.103/index.php";
+const ADMIN_API = "https://sschn6b.site/index.php";
 
 const token = localStorage.getItem("token");
 const firstName = localStorage.getItem("firstName");

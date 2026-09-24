@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Contacts</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body class="contacts-page">
+
+    <main class="contacts-container">
+
+        <header class="contacts-header">
+            <div>
+                <h1>My Contacts</h1>
+                <p id="welcomeMessage"></p>
+            </div>
+
+            <button type="button" id="logoutButton">Log Out</button>
+        </header>
+
+        <section class="contact-controls">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search contacts..."
+            >
+
+            <button type="button" id="searchButton">
+                Search
+            </button>
+
+            <button type="button" id="showAddContactButton">
+                Add Contact
+            </button>
+        </section>
+
+
+        <!-- Add Contact Form -->
+        <section id="addContactSection" hidden>
+
+            <h2>Add Contact</h2>
+
+            <form id="addContactForm">
+
+                <label for="contactFirstName">First Name</label>
+                <input
+                    type="text"
+                    id="contactFirstName"
+                    required
+                >
+
+                <label for="contactLastName">Last Name</label>
+                <input
+                    type="text"
+                    id="contactLastName"
+                    required
+                >
+
+                <label for="contactEmail">Email</label>
+                <input
+                    type="email"
+                    id="contactEmail"
+                    required
+                >
+
+                <label for="contactPhone">Phone Number</label>
+                <input
+                    type="tel"
+                    id="contactPhone"
+                    required
+                >
+
+                <button type="submit">Save Contact</button>
+
+                <button type="button" id="cancelAddButton">
+                    Cancel
+                </button>
+
+            </form>
+
+            <p id="contactMessage" class="message"></p>
+
+        </section>
+
+
+        <!-- Contact Results -->
+        <section>
+            <h2>Contacts</h2>
+
+            <p id="searchMessage" class="message"></p>
+
+            <div id="contactsList"></div>
+        </section>
+
+    </main>
+
+    <script src="js/contacts.js"></script>
+
+</body>
+</html>

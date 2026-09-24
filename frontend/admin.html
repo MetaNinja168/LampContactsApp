@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale-1.0">
+
+        <title>Administrator Panel</title>
+
+        <link rel="stylesheet" href="css/styles.css">
+    </head>
+
+    <body>
+
+        <main class="admin-panel">
+            <header class="admin-header">
+                <div>
+                    <h1>Admin Panel</h1>
+                    <p id="welcomeMessage"></p>
+                </div>
+
+                <button type="button" id="logoutButton">Log Out</button>
+            </header>
+
+            <section class="admin-controls" id="adminPanel">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search Users..."
+                >
+
+                <button type="button" id="searchButton">
+                    Search
+                </button>
+
+                <button type="button" id="showAddButton">
+                        Create New Admin
+                </button>
+                
+
+            </section>
+
+            <!-- Disable Users -->
+            <section id="banSection" hidden>
+                <h2>Ban User</h2>
+
+                <form id="banUserForm" hidden>
+                    <label for="Username">Username</label>
+                    <input
+                        type="text"
+                        id="targetUser"
+                        name="targetUser"
+                        required
+                    >
+
+                    <button type="submit">Disable Account</button>
+                    <button type="button" id="cancelBan">Back</button>
+                </form>
+
+                <p id="banMessage" class="message"></p>
+
+            </section>
+
+            <!-- Change Password -->
+             <section id="changePassSection" hidden>
+                <h2>Change User's Password</h2>
+
+                <form id="changePassForm">
+                    <label for="Username">Username</label>
+                    <input
+                        type="text"
+                        id="userUsername"
+                        name="userUsername"
+                        required
+                    >
+
+                    <label for="newPassword">New Password</label>
+                    <input
+                        type="password"
+                        id="newPass"
+                        name="newPass"
+                        required
+                    >
+
+                    <button type="submit">Confirm Changes</button>
+                    <button type="button" id="cancelChangePass">Back</button>
+                </form>
+
+                <p id="changeMessage"></p>
+             </section>
+
+
+            <!-- Add Admin -->
+            <section id="addAdminSection" hidden>
+                <form id="addAdminForm">
+                    <label for="firstName">First Name</label>
+                    <input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        required
+                    >
+
+                    <label for="lastName">Last Name</label>
+                    <input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        required
+                    >
+
+                    <label for="registerUsername">Username</label>
+                    <input
+                        type="text"
+                        id="registerUsername"
+                        name="registerUsername"
+                        required
+                    >
+
+                    <label for="registerPassword">Password</label>
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        name="registerPassword"
+                        required
+                    >
+
+                    <button type="submit">Create Admin Account</button>
+                    <button type="button" id="cancelAdd">Back</button>
+                </form>
+
+                <p id="addMessage"></p>
+            </section>
+
+            <!-- Search Results -->
+            <section id="searchResults">
+                <h2>Users</h2>
+
+                <p id="searchMessage" class="message"></p>
+
+                <div id="usersList"></div>
+            </section>
+        </main>
+
+        <script src="js/admin.js"></script>
+    </body>
+</html>

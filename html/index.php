@@ -108,6 +108,7 @@ if ($method === 'POST') {
                 'firstName' => $user['FirstName'],
                 'lastName'  => $user['LastName'],
                 'token'     => (string) $user['ID'],
+                'role'      => $user['Role'],
                 'error'     => ''
             ]);
         } else {

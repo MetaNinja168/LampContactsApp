@@ -1,4 +1,4 @@
-const ADMIN_API = "https://sschn6b.site/index.php";
+const ADMIN_API = "https://sschn6b.site/API/admins.php";
 
 const token = localStorage.getItem("token");
 const firstName = localStorage.getItem("firstName");
@@ -26,30 +26,17 @@ showAddButton.addEventListener("click", function() {
 });
 
 // Ensure user is logged in. Otherwise, return to login screen
-// if (!token) {
-//     window.location.href = "index.html";
-// }
+if (!token) {
+    window.location.href = "index.html";
+}
 
 // Show user's name
 welcomeMessage = `Welcome, ${firstName}!`;
 
 // Ban User
-const banUserForm = document.getElementById("banUserForm");
-const banMessage = document.getElementById("banMessage");
+async function banUser() {
 
-banUserForm.addEventListener("submit", async function (event) {
-    event.preventDefault();
-
-    const targetUser = document.getElementById("targetUser").value.trim();
-
-    banMessage = "Disabling Account..."
-    try {
-
-    } catch (error) {
-        console.error("Disabling error:", error);
-        banMessage = "Unable to disable account.";
-    }
-});
+}
 
 
 
@@ -65,3 +52,56 @@ addAdminForm.addEventListener("submit", async function (event) {
     const login = document.getElementById("registerUsername").value.trim();
     const password = document.getElementById("registerPassword").value;
 });
+
+// Search User
+searchButton.addEventListener("click", searchUsers);
+
+searchInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+        searchUsers();
+    }
+});
+
+async function searchUsers() {
+    const searchTerm = searchInput.value.trim();
+
+    if (!searchTerm) {
+        searchMessage.textContent = "Please enter the username of the user you wish to view."
+        usersList.innerHTML = "";
+        return;
+    }
+
+    searchMessage.textContent = "Searching...";
+    contactsList.innerHTML = "";
+
+    try {
+        const response = await fetch(
+            `${ADMIN_API}?q=${encodeURIComponent(searchTerm)}`,
+            {
+                method: "POST",
+                header: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    login: login
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            searchMessage.textContent = data.error || "Search failed.";
+            return;
+        }
+
+        //if (!data.users)
+
+    } catch (error) {
+        console.error("Search error:", error);
+        searchMessage.textContent = "Unable to connect to the server.";
+    }
+}

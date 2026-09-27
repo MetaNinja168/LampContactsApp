@@ -2,14 +2,14 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale-1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>Administrator Panel</title>
 
         <link rel="stylesheet" href="css/styles.css">
     </head>
 
-    <body>
+    <body class="admin-page">
 
         <main class="admin-panel">
             <header class="admin-header">
@@ -38,56 +38,6 @@
                 
 
             </section>
-
-            <!-- Disable Users -->
-            <section id="banSection" hidden>
-                <h2>Ban User</h2>
-
-                <form id="banUserForm" hidden>
-                    <label for="Username">Username</label>
-                    <input
-                        type="text"
-                        id="targetUser"
-                        name="targetUser"
-                        required
-                    >
-
-                    <button type="submit">Disable Account</button>
-                    <button type="button" id="cancelBan">Back</button>
-                </form>
-
-                <p id="banMessage" class="message"></p>
-
-            </section>
-
-            <!-- Change Password -->
-             <section id="changePassSection" hidden>
-                <h2>Change User's Password</h2>
-
-                <form id="changePassForm">
-                    <label for="Username">Username</label>
-                    <input
-                        type="text"
-                        id="userUsername"
-                        name="userUsername"
-                        required
-                    >
-
-                    <label for="newPassword">New Password</label>
-                    <input
-                        type="password"
-                        id="newPass"
-                        name="newPass"
-                        required
-                    >
-
-                    <button type="submit">Confirm Changes</button>
-                    <button type="button" id="cancelChangePass">Back</button>
-                </form>
-
-                <p id="changeMessage"></p>
-             </section>
-
 
             <!-- Add Admin -->
             <section id="addAdminSection" hidden>
@@ -125,7 +75,7 @@
                     >
 
                     <button type="submit">Create Admin Account</button>
-                    <button type="button" id="cancelAdd">Back</button>
+                    <button type="button" id="cancelAddAdmin">Back</button>
                 </form>
 
                 <p id="addMessage"></p>

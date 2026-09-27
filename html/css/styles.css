@@ -183,3 +183,47 @@ section > p button:hover {
     margin: 4px 0;
     color: #555;
 }
+
+/* Admin Page */
+
+.admin-page {
+    display: block;
+    padding: 40px 20px;
+}
+
+.admin-panel {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    padding: 35px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.admin-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.admin-controls input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.admin-controls button {
+    white-space: nowrap;
+}
+
+#cancelAddAdmin {
+    background: red;
+    margin-top: 16px;
+}

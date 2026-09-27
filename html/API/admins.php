@@ -5,6 +5,8 @@
 //  POST /api/admin.php?action=searchContacts   — Search all contacts
 //  POST /api/admin.php?action=setStatus        — Enable/disable user
 //  POST /api/admin.php?action=changePassword   — Change user password
+//  POST /api/admin.php?action=showAll          — Show all users
+//  POST /api/admin.php?action=addAdmin         — Add Admin
 // ============================================================
 
 require_once __DIR__ . '/../config/db.php';
@@ -43,8 +45,27 @@ if ($method === 'POST' && $action === 'searchUsers') {
     }
 
     $like = '%' . $search . '%';
-    $stmt = $db->prepare('SELECT ID as id, firstName, lastName, Login as login, Role as role, Enabled as enabled FROM Users WHERE firstName LIKE :q OR lastName LIKE :q OR Login LIKE :q ORDER BY lastName, firstName');
+    $stmt = $db->prepare('SELECT ID as id, FirstName as firstName, LastName as lastName, Login as login, Role as role, Enabled as enabled FROM Users WHERE FirstName LIKE :q OR LastName LIKE :q OR Login LIKE :q ORDER BY LastName, FirstName');
     $stmt->execute([':q' => $like]);
+
+    $users = $stmt->fetchAll();
+    if (empty($users)) {
+        respond(200, ['results' => [], 'users' => [], 'error' => 'No Records Found']);
+    }
+
+    respond(200, [
+        'results' => array_column($users, 'firstName'),
+        'users' => $users,
+        'error' => ''
+    ]);
+}
+
+// ============================================================
+// ADMIN SHOW ALL USERS
+// ============================================================
+if ($method === 'GET' && $action === 'showAll') {
+    $stmt = $db->prepare('SELECT ID as id, FirstName as firstName, LastName as lastName, Login as Login, Role as Role, Enabled as enabled FROM Users ORDER BY LastName, FirstName');
+    $stmt->execute();
 
     $users = $stmt->fetchAll();
     if (empty($users)) {
@@ -142,6 +163,44 @@ if ($method === 'POST' && $action === 'changePassword') {
         'message' => 'Password changed successfully',
         'userId' => (int) $targetUserId,
         'error' => ''
+    ]);
+}
+
+// ============================================================
+// ADMIN ADD ADMIN
+// ============================================================
+if ($method === 'POST' && $action === 'addAdmin') {
+    $firstName = $body['firstName'];
+    $lastName = $body['lastName'];
+    $login = $body['login'];
+    $password = $body['password'];
+
+    if (!$firstName || !$lastName || !$login || $password) respond(400, ['error' => 'Please fill ALL fields']);
+
+    $check = $db->prepare('SELECT ID FROM Users WHERE Login = :login');
+    $check->execute([':login' => $login]);
+    if (!$check->fetch()) respond(400, 'User already exists');
+
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    $stmt = $db->prepare('INSERT INTO Users (firstName, lastName, Login, Password, Roled, Enabled) VALUES (:fn, :ln, :login, :pass, :role, :enabled');
+    $stmt->execute([
+        ':fn' => $firstName,
+        ':ln' => $lastName,
+        ':login' => $login,
+        ':pass' => $hashedPassword,
+        ':role' => 'admin',
+        ':enabled' => 1
+    ]);
+
+    respond(201, [
+        'success' => true,
+        'message' => 'Admin created successfully',
+        'user' => [
+            'id' => (int) $db->lastInsertId(),
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+            'login' => $login
+        ]
     ]);
 }
 

@@ -45,16 +45,19 @@ if ($method === 'POST' && $action === 'searchUsers') {
     }
 
     $like = '%' . $search . '%';
-    $stmt = $db->prepare('SELECT ID as id, FirstName as firstName, LastName as lastName, Login as login, Role as role, Enabled as enabled FROM Users WHERE FirstName LIKE :q OR LastName LIKE :q OR Login LIKE :q ORDER BY LastName, FirstName');
-    $stmt->execute([':q' => $like]);
+    $stmt = $db->prepare('SELECT ID as id, FirstName as firstName, LastName as lastName, Login as login, Role as role, Enabled as enabled FROM Users WHERE FirstName LIKE :q1 OR LastName LIKE :q2 OR Login LIKE :q3 ORDER BY LastName, FirstName');
+    $stmt->execute([
+        ':q1' => $like,
+        ':q2' => $like,
+        ':q3' => $like
+    ]);
 
     $users = $stmt->fetchAll();
     if (empty($users)) {
-        respond(200, ['results' => [], 'users' => [], 'error' => 'No Records Found']);
+        respond(200, ['users' => [], 'error' => 'No Records Found']);
     }
 
     respond(200, [
-        'results' => array_column($users, 'firstName'),
         'users' => $users,
         'error' => ''
     ]);
@@ -169,19 +172,19 @@ if ($method === 'POST' && $action === 'changePassword') {
 // ADMIN ADD ADMIN
 // ============================================================
 if ($method === 'POST' && $action === 'addAdmin') {
-    $firstName = $body['firstName'];
-    $lastName = $body['lastName'];
-    $login = $body['login'];
-    $password = $body['password'];
+    $firstName = clean($body['firstName']);
+    $lastName = clean($body['lastName']);
+    $login = clean($body['login']);
+    $password = clean($body['password']);
 
     if (!$firstName || !$lastName || !$login || !$password) respond(400, ['error' => 'Please fill ALL fields']);
 
     $check = $db->prepare('SELECT ID FROM Users WHERE Login = :login');
     $check->execute([':login' => $login]);
-    if (!$check->fetch()) respond(400, 'User already exists');
+    if ($check->fetch()) respond(400, 'User already exists');
 
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-    $stmt = $db->prepare('INSERT INTO Users (firstName, lastName, Login, Password, Roled, Enabled) VALUES (:fn, :ln, :login, :pass, :role, :enabled');
+    $stmt = $db->prepare('INSERT INTO Users (firstName, lastName, Login, Password, Role, Enabled) VALUES (:fn, :ln, :login, :pass, :role, :enabled)');
     $stmt->execute([
         ':fn' => $firstName,
         ':ln' => $lastName,

@@ -139,12 +139,17 @@ addAdminForm.addEventListener("submit", async function (event) {
         });
 
         if (response.ok) {
-            addAdminMessage.textContent("Successfully created admin");
-            addAdminForm.reset();
-            addAdminSection.hidden = true;
+            addAdminMessage.textContent = "Successfully created admin";
+            setTimeout(function() {
+                addAdminSection.hidden = true;
+                addAdminForm.reset();
+                addAdminMessage.textContent = "";
+            }, 1500);
+            displayAll();
         }
     } catch (error) {
         console.error("Add admin error:", error);
+        addAdminMessage.textContent = "Something went wrong. Please try again later.";
     }
 });
 
@@ -194,7 +199,7 @@ async function searchUsers() {
             return;
         }
 
-        if (data.users || data.users.length === 0) {
+        if (!data.users || data.users.length === 0) {
             searchMessage.textContent = "No users found..."
             return;
         }
@@ -219,11 +224,15 @@ async function searchUsers() {
 
                 const banButton = document.createElement("button");
                 banButton.textContent = `${user.enabled ? "Disable" : "Enable"}`;
-                banButton.addEventListener("click", banUser(user, actionMessage, banButton));
+                banButton.addEventListener("click", function() {
+                    banUser(user, actionMessage, banButton);
+                });
 
                 const changeButton = document.createElement("button");
                 changeButton.textContent = "Change Password";
-                changeButton.addEventListener("click", changePass(user, actionMessage));
+                changeButton.addEventListener("click", function() {
+                    changePass(user, actionMessage);
+                });
 
                 const searchConIn = document.createElement("input");
                 searchConIn.type = "text";

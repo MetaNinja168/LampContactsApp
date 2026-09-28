@@ -85,22 +85,58 @@ if ($method === 'GET') {
 // ADMIN SEARCH CONTACTS (all users' contacts)
 // ============================================================
 if ($method === 'POST' && $action === 'searchContacts') {
+
     $search = $body['search'] ?? '';
     if (!$search) {
         respond(400, ['error' => 'Search term is required']);
     }
 
+    $input = $body['userID'] ?? '';
+    if (!$input) {
+        respond(400, ['error' => 'User ID is required']);
+    }
+
     $like = '%' . $search . '%';
-    $stmt = $db->prepare('SELECT ID as id, UserID as userId, firstName, lastName, email, phoneNumber FROM Contacts WHERE firstName LIKE :q OR lastName LIKE :q OR email LIKE :q ORDER BY lastName, firstName');
-    $stmt->execute([':q' => $like]);
+    $stmt = $db->prepare('SELECT ID as id, UserID as userId, FirstName as firstName, LastName as lastName, Email as email, PhoneNumber as phoneNumber FROM Contacts WHERE UserID = :id AND (firstName LIKE :q1 OR lastName LIKE :q2 OR email LIKE :q3) ORDER BY LastName, FirstName');
+    $stmt->execute([
+        ':id' => $input,
+        ':q1' => $like,
+        ':q2' => $like,
+        ':q3' => $like
+    ]);
 
     $contacts = $stmt->fetchAll();
     if (empty($contacts)) {
-        respond(200, ['results' => [], 'contacts' => [], 'error' => 'No Records Found']);
+        respond(200, ['contacts' => [], 'error' => 'No Records Found']);
     }
 
     respond(200, [
-        'results' => array_column($contacts, 'firstName'),
+        'contacts' => $contacts,
+        'error' => ''
+    ]);
+}
+
+// ============================================================
+// ADMIN SHOW ALL CONTACTS
+// ============================================================
+if ($method === 'POST' && $action === 'showCon') {
+
+    $input = $body['userID'] ?? '';
+    if (!$input) {
+        respond(400, ['error' => 'User ID is required']);
+    }
+
+    $stmt = $db->prepare('SELECT ID as id, UserID as userId, FirstName as firstName, LastName as lastName, Email as email, PhoneNumber as phoneNUmber FROM Contacts WHERE UserID = :id ORDER BY LastName, FirstName');
+    $stmt->execute([
+        ':id' => $input
+    ]);
+
+    $contacts = $stmt->fetchAll();
+    if (empty($contacts)) {
+        respond(200, ['contacts' => [], 'error' => 'No Records Found']);
+    }
+
+    respond(200, [
         'contacts' => $contacts,
         'error' => ''
     ]);

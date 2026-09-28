@@ -200,62 +200,17 @@ async function searchUsers() {
         }
 
         if (!data.users || data.users.length === 0) {
-            searchMessage.textContent = "No users found..."
+            searchMessage.textContent = "No users found...";
             return;
         }
 
+        searchMessage.textContent = `Displaying results for \"${searchTerm}\"`;
+
         data.users.forEach(function (user) {
-            if (user.id !== token) {
-
-                const userCard = document.createElement("div");
-                userCard.className = "user-card";
-
-                const name = document.createElement("h3");
-                name.textContent = `${user.firstName} ${user.lastName}`;
-
-                const login = document.createElement("h4");
-                login.textContent = `${user.login}`;
-
-                const id = document.createElement("p");
-                id.textContent = `User ID: ${user.id}`;
-
-                const actionMessage = document.createElement("p");
-                actionMessage.textContent = "";
-
-                const banButton = document.createElement("button");
-                banButton.textContent = `${user.enabled ? "Disable" : "Enable"}`;
-                banButton.addEventListener("click", function() {
-                    banUser(user, actionMessage, banButton);
-                });
-
-                const changeButton = document.createElement("button");
-                changeButton.textContent = "Change Password";
-                changeButton.addEventListener("click", function() {
-                    changePass(user, actionMessage);
-                });
-
-                const searchConIn = document.createElement("input");
-                searchConIn.type = "text";
-                searchConIn.id = "searchContact";
-                searchConIn.placeholder = "Search Contacts...";
-
-                const searchCon = document.createElement("button");
-                searchCon.textContent = "Search Contacts";
-                searchCon.addEventListener("click", searchUserContacts(user));
-
-
-                userCard.appendChild(name);
-                userCard.appendChild(login);
-                userCard.appendChild(id);
-                userCard.appendChild(actionMessage);
-                userCard.appendChild(banButton);
-                userCard.appendChild(changeButton);
-                userCard.appendChild(searchConIn);
-                userCard.appendChild(searchCon);
-
-                usersList.appendChild(userCard);
-            }
+            displayUser(user);
         });
+
+        searchMessage.textContent
 
     } catch (error) {
         console.error("Search error:", error);
@@ -293,56 +248,7 @@ async function displayAll() {
         }
 
         data.users.forEach(function (user) {
-            if (user.id !== token) {
-
-                const userCard = document.createElement("div");
-                userCard.className = "user-card";
-
-                const name = document.createElement("h3");
-                name.textContent = `${user.firstName} ${user.lastName}`;
-
-                const login = document.createElement("h4");
-                login.textContent = `${user.login}`;
-
-                const id = document.createElement("p");
-                id.textContent = `User ID: ${user.id}`;
-
-                const actionMessage = document.createElement("p");
-                actionMessage.textContent = "";
-
-                const banButton = document.createElement("button");
-                banButton.textContent = `${user.enabled ? "Disable" : "Enable"}`;
-                banButton.addEventListener("click", function() {
-                    banUser(user, actionMessage, banButton);
-                });
-
-                const changeButton = document.createElement("button");
-                changeButton.textContent = "Change Password";
-                changeButton.addEventListener("click", function() {
-                    changePass(user, actionMessage);
-                });
-
-                const searchConIn = document.createElement("input");
-                searchConIn.type = "text";
-                searchConIn.id = "searchContact";
-                searchConIn.placeholder = "Search Contacts...";
-
-                const searchCon = document.createElement("button");
-                searchCon.textContent = "Search Contacts";
-                searchCon.addEventListener("click", searchUserContacts(user));
-
-
-                userCard.appendChild(name);
-                userCard.appendChild(login);
-                userCard.appendChild(id);
-                userCard.appendChild(actionMessage);
-                userCard.appendChild(banButton);
-                userCard.appendChild(changeButton);
-                userCard.appendChild(searchConIn);
-                userCard.appendChild(searchCon);
-
-                usersList.appendChild(userCard);
-            }
+            displayUser(user);
         });
 
     } catch (error) {
@@ -352,8 +258,177 @@ async function displayAll() {
 }
 
 // Search User Contact
-async function searchUserContacts(user, userCard) {
+async function searchUserContacts(user, contactsList, searchConMessage, searchConIn) {
+    contactsList.innerHTML = "";
+    const searchTerm = searchConIn.value.trim()
 
+    if (!searchTerm) {
+        showAllContacts(user, contactsList, searchConMessage);
+        return;
+    }
+
+    try {
+        const response = await fetch(
+            `${ADMIN_API}?action=searchContacts`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                action: "searchContacts",
+                body: JSON.stringify({
+                    "userID": user.id,
+                    "search": searchTerm
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            searchConMessage.textContent = "No contacts found";
+            return;
+        }
+
+        if (!data.contacts || data.contacts.length === 0) {
+            searchConMessage.textContent = ""
+        }
+
+        data.contacts.forEach(function (contact) {
+            searchConMessage.textContent = `Displaying all of ${user.firstName}'s contacts containing \"${searchTerm}\"`;
+            displayContact(contact, contactsList);
+        });
+
+    } catch (error) {
+        console.error("Search contact error:", error);
+    }
+}
+
+// Show All User Contact
+async function showAllContacts(user, contactsList, searchConMessage,) {
+
+    contactsList.innerHTML = "";
+
+    try {
+        const response = await fetch(
+            `${ADMIN_API}?action=showCon`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                action: "showCon",
+                body: JSON.stringify({
+                    "userID": user.id
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            searchConMessage.textContent = "Unable to display all contacts";
+            return;
+        }
+
+        if (!data.contacts || data.contacts.length === 0) {
+            searchConMessage.textContent = ""
+        }
+
+        data.contacts.forEach(function (contact) {
+            searchConMessage.textContent = `Displaying all of ${user.firstName}'s contacts`;
+            displayContact(contact, contactsList);
+        });
+
+    } catch (error) {
+        console.error("Search contact error:", error);
+    }
+}
+
+// Display User
+async function displayUser(user) {
+    const userCard = document.createElement("div");
+    userCard.className = "user-card";
+
+    const name = document.createElement("h3");
+    name.textContent = `${user.firstName} ${user.lastName}`;
+
+    const login = document.createElement("h4");
+    login.textContent = `${user.login}`;
+
+    const id = document.createElement("p");
+    id.textContent = `User ID: ${user.id} | Role: ${user.role}`;
+
+    const actionMessage = document.createElement("p");
+    actionMessage.textContent = "";
+
+    const banButton = document.createElement("button");
+    banButton.textContent = `${user.enabled ? "Disable" : "Enable"}`;
+    banButton.addEventListener("click", function() {
+        banUser(user, actionMessage, banButton);
+    });
+
+    const changeButton = document.createElement("button");
+    changeButton.textContent = "Change Password";
+    changeButton.addEventListener("click", function() {
+        changePass(user, actionMessage);
+    });
+
+    const contactsList = document.createElement("div");
+    contactsList.id = "contactsList";
+
+    const searchConIn = document.createElement("input");
+    searchConIn.type = "text";
+    searchConIn.id = "searchContact";
+    searchConIn.placeholder = "Search Contacts...";
+
+    const searchCon = document.createElement("button");
+    searchCon.textContent = "Search Contacts";
+    searchCon.addEventListener("click", function() {
+        searchUserContacts(user, contactsList, searchConMessage, searchConIn);
+    });
+
+    const searchConMessage = document.createElement("p");
+    searchConMessage.textContent = "";
+    searchConMessage.id = "searchConMessage";
+
+
+    userCard.appendChild(name);
+    userCard.appendChild(login);
+    userCard.appendChild(id);
+    userCard.appendChild(actionMessage);
+    userCard.appendChild(banButton);
+    userCard.appendChild(changeButton);
+    userCard.appendChild(searchConIn);
+    userCard.appendChild(searchCon);
+    userCard.appendChild(searchConMessage);
+    userCard.appendChild(contactsList);
+
+    usersList.appendChild(userCard);
+
+    showAllContacts(user, contactsList, searchConMessage);
+}
+
+// Display Contact
+async function displayContact(contact, contactsList) {
+
+    const contactCard = document.createElement("div");
+    contactCard.className = "contact-card";
+
+    const name = document.createElement("h4");
+    name.textContent = `${contact.firstName} ${contact.lastName}`;
+
+    const email = document.createElement("p");
+    email.textContent = `Email: ${contact.email}`;
+
+    const phone = document.createElement("p");
+    phone.textContent = `Phone: ${contact.phoneNumber}`;
+
+    contactCard.appendChild(name);
+    contactCard.appendChild(email);
+    contactCard.appendChild(phone);
+
+    contactsList.appendChild(contactCard);
 }
 
 displayAll();

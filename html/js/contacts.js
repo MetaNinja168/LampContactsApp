@@ -129,40 +129,10 @@ async function searchContacts() {
             return;
         }
 
-        searchMessage.textContent = "";
+        searchMessage.textContent = `Displaying results for \"${searchTerm}\"`;
 
         data.contacts.forEach(function (contact) {
-            const contactCard = document.createElement("div");
-            contactCard.className = "contact-card";
-
-            const name = document.createElement("h3");
-            name.textContent = `${contact.first_name} ${contact.last_name}`;
-
-            const email = document.createElement("p");
-            email.textContent = `Email: ${contact.email}`;
-
-            const phone = document.createElement("p");
-            phone.textContent = `Phone: ${contact.phone_number}`;
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "Edit";
-            editButton.addEventListener("click", function () {
-                editContact(contact);
-            });
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", function () {
-                deleteContact(contact.id);
-            });
-
-            contactCard.appendChild(name);
-            contactCard.appendChild(email);
-            contactCard.appendChild(phone);
-            contactCard.appendChild(editButton);
-            contactCard.appendChild(deleteButton);
-
-            contactsList.appendChild(contactCard);
+            displayContact(contact);
         });
 
     } catch (error) {
@@ -202,43 +172,48 @@ async function displayAll() {
         searchMessage.textContent = "Displaying all contacts. Enter a name, email, or phone number to search for specific contacts.";
 
         data.contacts.forEach(function (contact) {
-            const contactCard = document.createElement("div");
-            contactCard.className = "contact-card";
-
-            const name = document.createElement("h3");
-            name.textContent = `${contact.first_name} ${contact.last_name}`;
-
-            const email = document.createElement("p");
-            email.textContent = `Email: ${contact.email}`;
-
-            const phone = document.createElement("p");
-            phone.textContent = `Phone: ${contact.phone_number}`;
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "Edit";
-            editButton.addEventListener("click", function () {
-                editContact(contact);
-            });
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", function () {
-                deleteContact(contact.id);
-            });
-
-            contactCard.appendChild(name);
-            contactCard.appendChild(email);
-            contactCard.appendChild(phone);
-            contactCard.appendChild(editButton);
-            contactCard.appendChild(deleteButton);
-
-            contactsList.appendChild(contactCard);
+            displayContact(contact);
         });
 
     } catch (error) {
         console.error("Search error:", error);
         searchMessage.textContent = "Unable to connect to the server.";
     }
+}
+
+// Display Contact
+async function displayContact(contact) {
+    const contactCard = document.createElement("div");
+    contactCard.className = "contact-card";
+
+    const name = document.createElement("h3");
+    name.textContent = `${contact.first_name} ${contact.last_name}`;
+
+    const email = document.createElement("p");
+    email.textContent = `Email: ${contact.email}`;
+
+    const phone = document.createElement("p");
+    phone.textContent = `Phone: ${contact.phone_number}`;
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.addEventListener("click", function () {
+        editContact(contact);
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", function () {
+        deleteContact(contact.id);
+    });
+
+    contactCard.appendChild(name);
+    contactCard.appendChild(email);
+    contactCard.appendChild(phone);
+    contactCard.appendChild(editButton);
+    contactCard.appendChild(deleteButton);
+
+    contactsList.appendChild(contactCard);
 }
 
 // Edit contact

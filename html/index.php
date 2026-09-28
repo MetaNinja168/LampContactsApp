@@ -481,7 +481,7 @@ switch ($method) {
                     OR Email LIKE :q3
                     OR PhoneNumber LIKE :q4
                  )
-                 ORDER BY FirstName, LastName'
+                 ORDER BY LastName, FirstName'
             );
 
             $stmt->execute([
@@ -511,7 +511,7 @@ switch ($method) {
                 PhoneNumber as phone_number
              FROM Contacts
              WHERE UserID = :uid
-             ORDER BY FirstName, LastName'
+             ORDER BY LastName, FirstName'
         );
 
         $stmt->execute([':uid' => $userId]);

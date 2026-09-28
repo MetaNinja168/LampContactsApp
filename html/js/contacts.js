@@ -2,6 +2,7 @@ const CONTACTS_API = "https://lamp.sschn6b.site/index.php";
 
 const token = localStorage.getItem("token");
 const firstName = localStorage.getItem("firstName");
+const lastName = localStorage.getItem("lastName");
 
 const welcomeMessage = document.getElementById("welcomeMessage");
 const logoutButton = document.getElementById("logoutButton");
@@ -23,7 +24,7 @@ if (!token) {
 }
 
 // Show user's name
-welcomeMessage.textContent = `Welcome, ${firstName}!`;
+welcomeMessage.textContent = `Welcome, ${firstName} ${lastName}!`;
 
 // Show Add Contact form
 showAddContactButton.addEventListener("click", function () {
@@ -75,6 +76,7 @@ addContactForm.addEventListener("submit", async function (event) {
             contactMessage.textContent = "Contact added successfully!";
             addContactForm.reset();
             addContactSection.hidden = true;
+            displayAll();
         } else {
             contactMessage.textContent = data.error || "Unable to add contact.";
         }
@@ -127,40 +129,10 @@ async function searchContacts() {
             return;
         }
 
-        searchMessage.textContent = "";
+        searchMessage.textContent = `Displaying results for \"${searchTerm}\"`;
 
         data.contacts.forEach(function (contact) {
-            const contactCard = document.createElement("div");
-            contactCard.className = "contact-card";
-
-            const name = document.createElement("h3");
-            name.textContent = `${contact.first_name} ${contact.last_name}`;
-
-            const email = document.createElement("p");
-            email.textContent = `Email: ${contact.email}`;
-
-            const phone = document.createElement("p");
-            phone.textContent = `Phone: ${contact.phone_number}`;
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "Edit";
-            editButton.addEventListener("click", function () {
-                editContact(contact);
-            });
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", function () {
-                deleteContact(contact.id);
-            });
-
-            contactCard.appendChild(name);
-            contactCard.appendChild(email);
-            contactCard.appendChild(phone);
-            contactCard.appendChild(editButton);
-            contactCard.appendChild(deleteButton);
-
-            contactsList.appendChild(contactCard);
+            displayContact(contact);
         });
 
     } catch (error) {
@@ -200,43 +172,48 @@ async function displayAll() {
         searchMessage.textContent = "Displaying all contacts. Enter a name, email, or phone number to search for specific contacts.";
 
         data.contacts.forEach(function (contact) {
-            const contactCard = document.createElement("div");
-            contactCard.className = "contact-card";
-
-            const name = document.createElement("h3");
-            name.textContent = `${contact.first_name} ${contact.last_name}`;
-
-            const email = document.createElement("p");
-            email.textContent = `Email: ${contact.email}`;
-
-            const phone = document.createElement("p");
-            phone.textContent = `Phone: ${contact.phone_number}`;
-
-            const editButton = document.createElement("button");
-            editButton.textContent = "Edit";
-            editButton.addEventListener("click", function () {
-                editContact(contact);
-            });
-
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "Delete";
-            deleteButton.addEventListener("click", function () {
-                deleteContact(contact.id);
-            });
-
-            contactCard.appendChild(name);
-            contactCard.appendChild(email);
-            contactCard.appendChild(phone);
-            contactCard.appendChild(editButton);
-            contactCard.appendChild(deleteButton);
-
-            contactsList.appendChild(contactCard);
+            displayContact(contact);
         });
 
     } catch (error) {
         console.error("Search error:", error);
         searchMessage.textContent = "Unable to connect to the server.";
     }
+}
+
+// Display Contact
+async function displayContact(contact) {
+    const contactCard = document.createElement("div");
+    contactCard.className = "contact-card";
+
+    const name = document.createElement("h3");
+    name.textContent = `${contact.first_name} ${contact.last_name}`;
+
+    const email = document.createElement("p");
+    email.textContent = `Email: ${contact.email}`;
+
+    const phone = document.createElement("p");
+    phone.textContent = `Phone: ${contact.phone_number}`;
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    editButton.addEventListener("click", function () {
+        editContact(contact);
+    });
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", function () {
+        deleteContact(contact.id);
+    });
+
+    contactCard.appendChild(name);
+    contactCard.appendChild(email);
+    contactCard.appendChild(phone);
+    contactCard.appendChild(editButton);
+    contactCard.appendChild(deleteButton);
+
+    contactsList.appendChild(contactCard);
 }
 
 // Edit contact

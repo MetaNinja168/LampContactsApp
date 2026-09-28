@@ -1,16 +1,16 @@
 <?php
 // ============================================================
 //  api/admin.php — Admin Operations (Authenticated + Admin Role Required)
-//  POST /api/admin.php?action=searchUsers      — Search users
-//  POST /api/admin.php?action=searchContacts   — Search all contacts
-//  POST /api/admin.php?action=setStatus        — Enable/disable user
-//  POST /api/admin.php?action=changePassword   — Change user password
-//  POST /api/admin.php?action=showAll          — Show all users
-//  POST /api/admin.php?action=addAdmin         — Add Admin
+//  POST admins.php?action=searchUsers      — Search users
+//  POST admins.php?action=searchContacts   — Search all contacts
+//  POST admins.php?action=setStatus        — Enable/disable user
+//  POST admins.php?action=changePassword   — Change user password
+//  POST admins.php?action=showAll          — Show all users
+//  GET  admins.php                         — Add Admin
 // ============================================================
 
-require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../config/helpers.php';
+require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/helpers.php';
 
 setCORSHeaders();
 
@@ -63,17 +63,16 @@ if ($method === 'POST' && $action === 'searchUsers') {
 // ============================================================
 // ADMIN SHOW ALL USERS
 // ============================================================
-if ($method === 'GET' && $action === 'showAll') {
-    $stmt = $db->prepare('SELECT ID as id, FirstName as firstName, LastName as lastName, Login as Login, Role as Role, Enabled as enabled FROM Users ORDER BY LastName, FirstName');
+if ($method === 'GET') {
+    $stmt = $db->prepare('SELECT ID as id, FirstName as firstName, LastName as lastName, Login as login, Role as role, Enabled as enabled FROM Users ORDER BY LastName, FirstName');
     $stmt->execute();
 
     $users = $stmt->fetchAll();
     if (empty($users)) {
-        respond(200, ['results' => [], 'users' => [], 'error' => 'No Records Found']);
+        respond(200, ['users' => [], 'error' => 'No Records Found']);
     }
 
     respond(200, [
-        'results' => array_column($users, 'firstName'),
         'users' => $users,
         'error' => ''
     ]);
@@ -123,14 +122,14 @@ if ($method === 'POST' && $action === 'setStatus') {
 
     $stmt = $db->prepare('UPDATE Users SET Enabled = :enabled WHERE ID = :id');
     $stmt->execute([
-        ':enabled' => $isActive ? 1 : 0,
+        ':enabled' => $isActive ? 0 : 1,
         ':id' => $targetUserId
     ]);
 
     respond(200, [
         'message' => 'User status updated',
         'userId' => (int) $targetUserId,
-        'enabled' => (bool) $isActive,
+        'enabled' => !((bool) $isActive),
         'error' => ''
     ]);
 }
@@ -175,7 +174,7 @@ if ($method === 'POST' && $action === 'addAdmin') {
     $login = $body['login'];
     $password = $body['password'];
 
-    if (!$firstName || !$lastName || !$login || $password) respond(400, ['error' => 'Please fill ALL fields']);
+    if (!$firstName || !$lastName || !$login || !$password) respond(400, ['error' => 'Please fill ALL fields']);
 
     $check = $db->prepare('SELECT ID FROM Users WHERE Login = :login');
     $check->execute([':login' => $login]);

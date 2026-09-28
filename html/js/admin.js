@@ -1,7 +1,8 @@
-const ADMIN_API = "https://lamp.sschn6b.site/API/admins.php";
+const ADMIN_API = "https://lamp.sschn6b.site/admins.php";
 
 const token = localStorage.getItem("token");
 const firstName = localStorage.getItem("firstName");
+const lastName = localStorage.getItem("lastName");
 
 const welcomeMessage = document.getElementById("welcomeMessage");
 const logoutButton = document.getElementById("logoutButton");
@@ -19,14 +20,10 @@ const addAdminSection = document.getElementById("addAdminSection");
 const addAdminMessage = document.getElementById("addMessage");
 
 showAddButton.addEventListener("click", function() {
-    adminPanel.hidden = true;
-    searchResults.hidden = true;
     addAdminSection.hidden = false;
 });
 
 cancelAddButton.addEventListener("click", function() {
-    adminPanel.hidden = false;
-    searchResults.hidden = false;
     addAdminSection.hidden = true;
 });
 
@@ -42,10 +39,16 @@ logoutButton.addEventListener("click", function () {
 });
 
 // Show user's name
-welcomeMessage.textContent = `Welcome, ${firstName}!`;
+welcomeMessage.textContent = `Welcome, ${firstName} ${lastName}!`;
 
 // Ban User
 async function banUser(user, actionMessage, button) {
+
+    if (user.id == token) {
+        actionMessage.textContent = "You cannot disable yourself!";
+        return;
+    }
+
     const confirmed = confirm(`Are you sure you want to ${user.enabled ? "disable" : "enable"} ${user.login}`);
 
     if (!confirmed) return;
@@ -54,6 +57,7 @@ async function banUser(user, actionMessage, button) {
         const response = await fetch(`${ADMIN_API}?action=setStatus`, {
             method: "POST",
             headers: {
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`,
             },
             action: "setStatus",
@@ -80,6 +84,7 @@ async function banUser(user, actionMessage, button) {
 // Change Password
 async function changePass(user, actionMessage) {
     const newPass = prompt("Enter the new password:");
+
     if (newPass === null) return;
 
     try {
@@ -120,7 +125,7 @@ addAdminForm.addEventListener("submit", async function (event) {
     try {
         const response = await fetch(`${ADMIN_API}?action=addAdmin`, {
             method: "POST",
-            header: {
+            headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             },
@@ -135,7 +140,8 @@ addAdminForm.addEventListener("submit", async function (event) {
 
         if (response.ok) {
             addAdminMessage.textContent("Successfully created admin");
-
+            addAdminForm.reset();
+            addAdminSection.hidden = true;
         }
     } catch (error) {
         console.error("Add admin error:", error);
@@ -145,7 +151,7 @@ addAdminForm.addEventListener("submit", async function (event) {
 
 
 // Search User
-searchButton.addEventListener("click", searchUsers());
+searchButton.addEventListener("click", searchUsers);
 
 searchInput.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
@@ -156,20 +162,21 @@ searchInput.addEventListener("keydown", function (event) {
 async function searchUsers() {
     const searchTerm = searchInput.value.trim();
 
+    usersList.innerHTML = "";
+
     if (!searchTerm) {
         displayAll();
         return;
     }
 
     searchMessage.textContent = "Searching...";
-    usersList.innerHTML = "";
 
     try {
         const response = await fetch(
             `${ADMIN_API}?action=searchUsers`,
             {
                 method: "POST",
-                header: {
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
@@ -193,7 +200,7 @@ async function searchUsers() {
         }
 
         data.users.forEach(function (user) {
-            if (user.id !== (int)(token)) {
+            if (user.id !== token) {
 
                 const userCard = document.createElement("div");
                 userCard.className = "user-card";
@@ -201,7 +208,7 @@ async function searchUsers() {
                 const name = document.createElement("h3");
                 name.textContent = `${user.firstName} ${user.lastName}`;
 
-                const login = document.createElement("h6");
+                const login = document.createElement("h4");
                 login.textContent = `${user.login}`;
 
                 const id = document.createElement("p");
@@ -212,15 +219,11 @@ async function searchUsers() {
 
                 const banButton = document.createElement("button");
                 banButton.textContent = `${user.enabled ? "Disable" : "Enable"}`;
-                banButton.addEventListener("click", function() {
-                    banUser(user, actionMessage, banButton);
-                });
+                banButton.addEventListener("click", banUser(user, actionMessage, banButton));
 
                 const changeButton = document.createElement("button");
                 changeButton.textContent = "Change Password";
-                changeButton.addEventListener("click", function() {
-                    changePass(user, actionMessage);
-                });
+                changeButton.addEventListener("click", changePass(user, actionMessage));
 
                 const searchConIn = document.createElement("input");
                 searchConIn.type = "text";
@@ -255,15 +258,16 @@ async function searchUsers() {
 async function displayAll() {
     usersList.innerHTML = "";
 
+    searchMessage.textContent = "Displaying all users. Enter a username for a specific search";
+
     try {
         const response = await fetch(
-            `${ADMIN_API}?action=showAll`,
+            `${ADMIN_API}`,
             {
                 method: "GET",
-                header: {
+                headers: {
                     "Authorization": `Bearer ${token}`
-                },
-                action: "showAll"
+                }
             }
         );
 
@@ -274,13 +278,13 @@ async function displayAll() {
             return;
         }
 
-        if (data.users || data.users.length === 0) {
+        if (!data.users || data.users.length === 0) {
             searchMessage.textContent = "No users found..."
             return;
         }
 
         data.users.forEach(function (user) {
-            if (user.id !== (int)(token)) {
+            if (user.id !== token) {
 
                 const userCard = document.createElement("div");
                 userCard.className = "user-card";
@@ -288,7 +292,7 @@ async function displayAll() {
                 const name = document.createElement("h3");
                 name.textContent = `${user.firstName} ${user.lastName}`;
 
-                const login = document.createElement("h6");
+                const login = document.createElement("h4");
                 login.textContent = `${user.login}`;
 
                 const id = document.createElement("p");

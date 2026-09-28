@@ -2,6 +2,7 @@ const CONTACTS_API = "https://lamp.sschn6b.site/index.php";
 
 const token = localStorage.getItem("token");
 const firstName = localStorage.getItem("firstName");
+const lastName = localStorage.getItem("lastName");
 
 const welcomeMessage = document.getElementById("welcomeMessage");
 const logoutButton = document.getElementById("logoutButton");
@@ -23,7 +24,7 @@ if (!token) {
 }
 
 // Show user's name
-welcomeMessage.textContent = `Welcome, ${firstName}!`;
+welcomeMessage.textContent = `Welcome, ${firstName} ${lastName}!`;
 
 // Show Add Contact form
 showAddContactButton.addEventListener("click", function () {
@@ -75,6 +76,7 @@ addContactForm.addEventListener("submit", async function (event) {
             contactMessage.textContent = "Contact added successfully!";
             addContactForm.reset();
             addContactSection.hidden = true;
+            displayAll();
         } else {
             contactMessage.textContent = data.error || "Unable to add contact.";
         }

@@ -1,0 +1,28 @@
+info:
+  name: Admin Login
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: https://lamp.sschn6b.site/index.php
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "login": "root",
+        "password": "NewPassword456!"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 10000
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
+
+docs: Logs in the demonstration Admin account. Replace the example credentials before testing.

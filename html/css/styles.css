@@ -73,6 +73,7 @@ button {
     color: white;
     font-size: 16px;
     cursor: pointer;
+    margin: 4px;
 }
 
 button:hover {
@@ -189,6 +190,19 @@ section > p button:hover {
     color: #5F6F85;
 }
 
+#editForm {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #F4F7FB;
+    border-radius: 8px;
+}
+
+#cancelEdit {
+    margin-top: 10px;
+    background: #5F6F85;
+}
+
 
 /* Admin Page */
 
@@ -229,9 +243,31 @@ section > p button:hover {
     white-space: nowrap;
 }
 
+.user-card {
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1px solid #D7E0EC;
+    border-radius: 8px;
+}
+
+#addAdminSection {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #F4F7FB;
+    border-radius: 8px;
+}
+
+#addContactSection h2 {
+    margin-bottom: 20px;
+}
+
 #cancelAddAdmin {
-    background: #DC2626;
+    background: #5F6F85;
     margin-top: 16px;
+}
+
+#usersList {
+    margin-top: 15px;
 }
 
 
@@ -274,11 +310,17 @@ body.dark-mode input:focus {
     outline-color: #4DA3FF;
 }
 
-body.dark-mode #addContactSection {
+body.dark-mode #addContactSection,
+body.dark-mode #addAdminSection {
     background: #1D2D47;
 }
 
-body.dark-mode .contact-card {
+body.dark-mode #editForm {
+    background: #2c436c;
+}
+
+body.dark-mode .contact-card,
+body.dark-mode .user-card {
     background: #1D2D47;
     border-color: #40536F;
 }
@@ -319,18 +361,21 @@ body.dark-mode .theme-toggle:hover {
 
 button,
 input,
-.contact-card {
+.contact-card,
+.user-card {
     transition: background-color 0.2s ease,
                 border-color 0.2s ease,
                 box-shadow 0.2s ease;
 }
 
-.contact-card:hover {
+.contact-card:hover,
+.user-card:hover {
     border-color: #2563EB;
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
 }
 
-body.dark-mode .contact-card:hover {
+body.dark-mode .contact-card:hover,
+body.dark-mode .user-card:hover {
     border-color: #4DA3FF;
     box-shadow: 0 4px 12px rgba(77, 163, 255, 0.10);
 }

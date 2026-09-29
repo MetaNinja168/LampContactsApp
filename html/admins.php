@@ -126,7 +126,7 @@ if ($method === 'POST' && $action === 'showCon') {
         respond(400, ['error' => 'User ID is required']);
     }
 
-    $stmt = $db->prepare('SELECT ID as id, UserID as userId, FirstName as firstName, LastName as lastName, Email as email, PhoneNumber as phoneNUmber FROM Contacts WHERE UserID = :id ORDER BY LastName, FirstName');
+    $stmt = $db->prepare('SELECT ID as id, UserID as userId, FirstName as firstName, LastName as lastName, Email as email, PhoneNumber as phoneNumber FROM Contacts WHERE UserID = :id ORDER BY LastName, FirstName');
     $stmt->execute([
         ':id' => $input
     ]);

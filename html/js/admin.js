@@ -34,7 +34,9 @@ if (!token) {
 
 // Logout
 logoutButton.addEventListener("click", function () {
+    const saveTheme = localStorage.getItem("theme.sschn6b");
     localStorage.clear();
+    localStorage.setItem("theme.sschn6b", saveTheme);
     window.location.href = "index.html";
 });
 
@@ -49,7 +51,7 @@ async function banUser(user, actionMessage, button) {
         return;
     }
 
-    const confirmed = confirm(`Are you sure you want to ${user.enabled ? "disable" : "enable"} ${user.login}`);
+    const confirmed = confirm(`Are you sure you want to ${user.enabled ? "disable" : "enable"} ${user.login}?`);
 
     if (!confirmed) return;
 
@@ -82,10 +84,13 @@ async function banUser(user, actionMessage, button) {
 }
 
 // Change Password
-async function changePass(user, actionMessage) {
-    const newPass = prompt("Enter the new password:");
+async function changePass(user, newPass, actionMessage) {
 
-    if (newPass === null) return;
+    if (!newPass) return;
+    
+    const confirmed = confirm(`Really change ${user.login}'s password?`);
+
+    if (!confirmed) return;
 
     try {
         const response = await fetch(`${ADMIN_API}?action=changePassword`, {
@@ -368,10 +373,15 @@ async function displayUser(user) {
         banUser(user, actionMessage, banButton);
     });
 
+    const changeInput = document.createElement("input");
+    changeInput.type = "password";
+    changeInput.id = "changePassword";
+    changeInput.placeholder = "Change Password..."
+
     const changeButton = document.createElement("button");
     changeButton.textContent = "Change Password";
     changeButton.addEventListener("click", function() {
-        changePass(user, actionMessage);
+        changePass(user, changeInput.value, actionMessage);
     });
 
     const contactsList = document.createElement("div");
@@ -398,6 +408,7 @@ async function displayUser(user) {
     userCard.appendChild(id);
     userCard.appendChild(actionMessage);
     userCard.appendChild(banButton);
+    userCard.appendChild(changeInput);
     userCard.appendChild(changeButton);
     userCard.appendChild(searchConIn);
     userCard.appendChild(searchCon);
@@ -432,3 +443,26 @@ async function displayContact(contact, contactsList) {
 }
 
 displayAll();
+
+
+// Light / Dark Mode
+
+const themeToggle = document.getElementById("themeToggle");
+
+// Keep the user's selected theme after refresh
+if (localStorage.getItem("theme.sschn6b") === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggle.textContent = "☀️ Light Mode";
+}
+
+themeToggle.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme.sschn6b", "dark");
+        themeToggle.textContent = "☀️ Light Mode";
+    } else {
+        localStorage.setItem("theme.sschn6b", "light");
+        themeToggle.textContent = "🌙 Dark Mode";
+    }
+});

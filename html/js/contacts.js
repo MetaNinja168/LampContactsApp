@@ -40,7 +40,9 @@ cancelAddButton.addEventListener("click", function () {
 
 // Log out
 logoutButton.addEventListener("click", function () {
+    const saveTheme = localStorage.getItem("theme.sschn6b");
     localStorage.clear();
+    localStorage.setItem("theme.sschn6b", saveTheme);
     window.location.href = "index.html";
 });
 
@@ -76,7 +78,7 @@ addContactForm.addEventListener("submit", async function (event) {
             contactMessage.textContent = "Contact added successfully!";
             addContactForm.reset();
             addContactSection.hidden = true;
-            displayAll();
+            await displayAll();
         } else {
             contactMessage.textContent = data.error || "Unable to add contact.";
         }
@@ -195,10 +197,15 @@ async function displayContact(contact) {
     const phone = document.createElement("p");
     phone.textContent = `Phone: ${contact.phone_number}`;
 
+    const editForm = document.createElement("form");
+    editForm.id = "editForm";
+    editForm.hidden = true;
+    createEditForm(editForm, contact);
+
     const editButton = document.createElement("button");
     editButton.textContent = "Edit";
     editButton.addEventListener("click", function () {
-        editContact(contact);
+        editForm.hidden = false;
     });
 
     const deleteButton = document.createElement("button");
@@ -212,23 +219,91 @@ async function displayContact(contact) {
     contactCard.appendChild(phone);
     contactCard.appendChild(editButton);
     contactCard.appendChild(deleteButton);
+    contactCard.appendChild(editForm);
 
     contactsList.appendChild(contactCard);
 }
 
+// Create the Edit Form
+async function createEditForm(form, contact) {
+
+    const formHeader = document.createElement("h2");
+    formHeader.textContent = "Edit Contact";
+
+    const labelFN = document.createElement("label");
+    labelFN.for = "editFN";
+    labelFN.textContent = "First Name";
+
+    const editFN = document.createElement("input");
+    editFN.type = "text";
+    editFN.id = "editFN";
+    editFN.value = `${contact.first_name}`;
+    editFN.required = true;
+
+    const labelLN = document.createElement("label");
+    labelLN.for = `editLN${contact.id}`;
+    labelLN.textContent = "Last Name";
+
+    const editLN = document.createElement("input");
+    editLN.type = "text";
+    editLN.id = "editLN";
+    editLN.value = `${contact.last_name}`;
+    editLN.required = true;
+
+    const labelMail = document.createElement("label");
+    labelMail.for = "editMail";
+    labelMail.textContent = "Email";
+
+    const editMail = document.createElement("input");
+    editMail.type = "text";
+    editMail.id = "editMail";
+    editMail.value = `${contact.email}`;
+    editMail.required = true;
+
+    const labelPhone = document.createElement("label");
+    labelPhone.for = "editPhone";
+    labelPhone.textContent = "Phone Number";
+
+    const editPhone = document.createElement("input");
+    editPhone.type = "text";
+    editPhone.id = "editPhone";
+    editPhone.value = `${contact.phone_number}`;
+    editPhone.required = true;
+
+    const acceptEdit = document.createElement("button");
+    acceptEdit.type = "button";
+    acceptEdit.id = "acceptEdit";
+    acceptEdit.textContent = "Submit Edits";
+
+    const cancelEdit = document.createElement("button");
+    cancelEdit.type = "button";
+    cancelEdit.id = "cancelEdit";
+    cancelEdit.textContent = "Cancel Edit";
+
+    form.appendChild(formHeader);
+    form.appendChild(labelFN);
+    form.appendChild(editFN);
+    form.appendChild(labelLN);
+    form.appendChild(editLN);
+    form.appendChild(labelMail);
+    form.appendChild(editMail);
+    form.appendChild(labelPhone);
+    form.appendChild(editPhone);
+    form.appendChild(acceptEdit);
+    form.appendChild(cancelEdit);
+
+    acceptEdit.addEventListener("click", function() {
+        form.hidden = true;
+        editContact(contact, editFN.value, editLN.value, editMail.value, editPhone.value);
+    });
+
+    cancelEdit.addEventListener("click", function() {
+        form.hidden = true;
+    });
+}
+
 // Edit contact
-async function editContact(contact) {
-    const firstName = prompt("First name:", contact.first_name);
-    if (firstName === null) return;
-
-    const lastName = prompt("Last name:", contact.last_name);
-    if (lastName === null) return;
-
-    const email = prompt("Email:", contact.email);
-    if (email === null) return;
-
-    const phoneNumber = prompt("Phone number:", contact.phone_number);
-    if (phoneNumber === null) return;
+async function editContact(contact, firstName, lastName, email, phoneNumber) {
 
     try {
         const response = await fetch(`${CONTACTS_API}?id=${contact.id}`, {
@@ -248,8 +323,8 @@ async function editContact(contact) {
         const data = await response.json();
 
         if (response.ok) {
+            await displayAll();
             searchMessage.textContent = "Contact updated successfully!";
-            await searchContacts();
         } else {
             searchMessage.textContent = data.error || "Unable to update contact.";
         }
@@ -278,8 +353,8 @@ async function deleteContact(contactId) {
         const data = await response.json();
 
         if (response.ok) {
+            await displayAll();
             searchMessage.textContent = "Contact deleted successfully!";
-            await searchContacts();
         } else {
             searchMessage.textContent = data.error || "Unable to delete contact.";
         }
@@ -290,3 +365,24 @@ async function deleteContact(contactId) {
 }
 
 displayAll();
+// Light / Dark Mode
+
+const themeToggle = document.getElementById("themeToggle");
+
+// Keep the user's selected theme after refresh
+if (localStorage.getItem("theme.sschn6b") === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggle.textContent = "☀️ Light Mode";
+}
+
+themeToggle.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme.sschn6b", "dark");
+        themeToggle.textContent = "☀️ Light Mode";
+    } else {
+        localStorage.setItem("theme.sschn6b", "light");
+        themeToggle.textContent = "🌙 Dark Mode";
+    }
+});

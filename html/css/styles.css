@@ -6,16 +6,20 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f6f8;
+    background-color: #EAF4FF;
+    background-image:
+        linear-gradient(rgba(37, 99, 235, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.09) 1px, transparent 1px);
+    background-size: 40px 40px;
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #222;
+    color: #0B172A;
 }
 
 .auth-container {
-    background: white;
+    background: #FFFFFF;
     width: 100%;
     max-width: 420px;
     padding: 40px;
@@ -30,7 +34,7 @@ body {
 
 .auth-container > p {
     text-align: center;
-    color: #666;
+    color: #5F6F85;
     margin-bottom: 30px;
 }
 
@@ -51,13 +55,13 @@ label {
 input {
     padding: 12px;
     margin-bottom: 18px;
-    border: 1px solid #ccc;
+    border: 1px solid #CBD5E1;
     border-radius: 6px;
     font-size: 16px;
 }
 
 input:focus {
-    outline: 2px solid #333;
+    outline: 2px solid #4DA3FF;
     outline-offset: 1px;
 }
 
@@ -65,14 +69,15 @@ button {
     padding: 12px 18px;
     border: none;
     border-radius: 6px;
-    background: #222;
+    background: #2563EB;
     color: white;
     font-size: 16px;
     cursor: pointer;
+    margin: 4px;
 }
 
 button:hover {
-    background: #444;
+    background: #1D4ED8;
 }
 
 section > p {
@@ -82,7 +87,7 @@ section > p {
 
 section > p button {
     background: none;
-    color: #222;
+    color: #2563EB;
     padding: 0;
     font-weight: 600;
     text-decoration: underline;
@@ -101,6 +106,7 @@ section > p button:hover {
     display: none;
 }
 
+
 /* Contacts Page */
 
 .contacts-page {
@@ -112,7 +118,7 @@ section > p button:hover {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    background: white;
+    background: #FFFFFF;
     padding: 35px;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -130,7 +136,7 @@ section > p button:hover {
 }
 
 .contacts-header p {
-    color: #666;
+    color: #5F6F85;
 }
 
 .contact-controls {
@@ -151,7 +157,7 @@ section > p button:hover {
 #addContactSection {
     margin-bottom: 30px;
     padding: 25px;
-    background: #f4f6f8;
+    background: #F4F7FB;
     border-radius: 8px;
 }
 
@@ -161,7 +167,7 @@ section > p button:hover {
 
 #cancelAddButton {
     margin-top: 10px;
-    background: #666;
+    background: #5F6F85;
 }
 
 #contactsList {
@@ -171,7 +177,7 @@ section > p button:hover {
 .contact-card {
     padding: 18px;
     margin-bottom: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid #D7E0EC;
     border-radius: 8px;
 }
 
@@ -181,8 +187,22 @@ section > p button:hover {
 
 .contact-card p {
     margin: 4px 0;
-    color: #555;
+    color: #5F6F85;
 }
+
+#editForm {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #F4F7FB;
+    border-radius: 8px;
+}
+
+#cancelEdit {
+    margin-top: 10px;
+    background: #5F6F85;
+}
+
 
 /* Admin Page */
 
@@ -195,7 +215,7 @@ section > p button:hover {
     width: 100%;
     max-width: 1000px;
     margin: 0 auto;
-    background: white;
+    background: #FFFFFF;
     padding: 35px;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
@@ -223,7 +243,139 @@ section > p button:hover {
     white-space: nowrap;
 }
 
+.user-card {
+    padding: 18px;
+    margin-bottom: 12px;
+    border: 1px solid #D7E0EC;
+    border-radius: 8px;
+}
+
+#addAdminSection {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #F4F7FB;
+    border-radius: 8px;
+}
+
+#addContactSection h2 {
+    margin-bottom: 20px;
+}
+
 #cancelAddAdmin {
-    background: red;
+    background: #5F6F85;
     margin-top: 16px;
+}
+
+#usersList {
+    margin-top: 15px;
+}
+
+
+/* Light / Dark Mode */
+
+body.dark-mode {
+    background-color: #071426;
+    background-image:
+        linear-gradient(rgba(77, 163, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(77, 163, 255, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    color: #F5F7FA;
+}
+
+body.dark-mode .auth-container,
+body.dark-mode .contacts-container,
+body.dark-mode .admin-panel {
+    background: #16243B;
+    color: #F5F7FA;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode .auth-container > p,
+body.dark-mode .contacts-header p,
+body.dark-mode .contact-card p {
+    color: #AEBBCC;
+}
+
+body.dark-mode input {
+    background: #1D2D47;
+    color: #F5F7FA;
+    border-color: #40536F;
+}
+
+body.dark-mode input::placeholder {
+    color: #AEBBCC;
+}
+
+body.dark-mode input:focus {
+    outline-color: #4DA3FF;
+}
+
+body.dark-mode #addContactSection,
+body.dark-mode #addAdminSection {
+    background: #1D2D47;
+}
+
+body.dark-mode #editForm {
+    background: #2c436c;
+}
+
+body.dark-mode .contact-card,
+body.dark-mode .user-card {
+    background: #1D2D47;
+    border-color: #40536F;
+}
+
+body.dark-mode section > p button {
+    color: #4DA3FF;
+}
+
+
+/* Theme Toggle */
+
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #2563EB;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    background: #1D4ED8;
+}
+
+body.dark-mode .theme-toggle {
+    background: #4DA3FF;
+    color: #071426;
+}
+
+body.dark-mode .theme-toggle:hover {
+    background: #7DBBFF;
+}
+
+button,
+input,
+.contact-card,
+.user-card {
+    transition: background-color 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.contact-card:hover,
+.user-card:hover {
+    border-color: #2563EB;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+body.dark-mode .contact-card:hover,
+body.dark-mode .user-card:hover {
+    border-color: #4DA3FF;
+    box-shadow: 0 4px 12px rgba(77, 163, 255, 0.10);
 }

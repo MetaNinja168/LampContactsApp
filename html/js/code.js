@@ -118,3 +118,25 @@ loginForm.addEventListener("submit", async function (event) {
         loginMessage.textContent = "Unable to connect to the server.";
     }
 });
+
+// Light / Dark Mode
+
+const themeToggle = document.getElementById("themeToggle");
+
+// Keep the user's selected theme after refresh
+if (localStorage.getItem("theme.sschn6b") === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggle.textContent = "☀️ Light Mode";
+}
+
+themeToggle.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+
+    if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("theme.sschn6b", "dark");
+        themeToggle.textContent = "☀️ Light Mode";
+    } else {
+        localStorage.setItem("theme.sschn6b", "light");
+        themeToggle.textContent = "🌙 Dark Mode";
+    }
+});

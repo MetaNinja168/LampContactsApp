@@ -51,10 +51,6 @@ async function banUser(user, actionMessage, button) {
         return;
     }
 
-    const confirmed = confirm(`Are you sure you want to ${user.enabled ? "disable" : "enable"} ${user.login}?`);
-
-    if (!confirmed) return;
-
     try {
         const response = await fetch(`${ADMIN_API}?action=setStatus`, {
             method: "POST",
@@ -107,7 +103,7 @@ async function changePass(user, newPass, actionMessage) {
         });
 
         if (response.ok) {
-            actionMessage.textContent = await response.json().message;
+            actionMessage.textContent = `Changed ${user.login}'s password.`;
         }
     } catch (error) {
         console.error("Change password error:", error);

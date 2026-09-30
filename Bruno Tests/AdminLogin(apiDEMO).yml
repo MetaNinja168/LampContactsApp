@@ -14,7 +14,7 @@ http:
     data: |-
       {
         "login": "root",
-        "password": "NewPassword456!"
+        "password": "password"
       }
   auth: inherit
 
